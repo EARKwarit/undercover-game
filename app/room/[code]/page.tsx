@@ -250,32 +250,58 @@ function TopBar({ state, onLeave }: { state: RoomView; onLeave: () => void }) {
 
 function YourWord({ state }: { state: RoomView }) {
   const you = state.you!;
-  if (!you.alive && state.phase !== "ended") {
-    return (
-      <div className="card border-rose-900/60 bg-rose-950/30 text-center">
+  const [hidden, setHidden] = useState(false);
+  const eliminated = !you.alive && state.phase !== "ended";
+
+  let cardClass = "card text-center";
+  let body: React.ReactNode;
+  if (eliminated) {
+    cardClass = "card border-rose-900/60 bg-rose-950/30 text-center";
+    body = (
+      <>
         <p className="text-sm uppercase tracking-wide text-rose-300">You were eliminated</p>
         {you.role && <p className="mt-1 font-semibold">You were the {ROLE_LABEL[you.role]}</p>}
         <p className="mt-1 text-sm text-zinc-400">Sit back and watch how it unfolds 🍿</p>
-      </div>
+      </>
     );
-  }
-  if (you.role === "mrwhite") {
-    return (
-      <div className="card border-amber-700/50 bg-amber-950/20 text-center">
+  } else if (you.role === "mrwhite") {
+    cardClass = "card border-amber-700/50 bg-amber-950/20 text-center";
+    body = (
+      <>
         <p className="text-sm uppercase tracking-wide text-amber-300">You are Mr. White 🤍</p>
         <p className="mt-1 text-zinc-300">You have NO word.</p>
         <p className="mt-1 text-sm text-zinc-400">
           Listen carefully, bluff a clue, and figure out the civilians' word. If you're voted out you get one guess to steal the win.
         </p>
-      </div>
+      </>
+    );
+  } else {
+    body = (
+      <>
+        <p className="text-xs uppercase tracking-wide text-zinc-500">Your secret word</p>
+        <p className="thai mt-1 text-4xl font-black text-indigo-300">{you.word}</p>
+        {you.gloss && <p className="mt-1 text-sm text-zinc-400">({you.gloss})</p>}
+        <p className="mt-2 text-xs text-zinc-500">Describe it — don't say it. Someone here has a different word…</p>
+      </>
     );
   }
+
   return (
-    <div className="card text-center">
-      <p className="text-xs uppercase tracking-wide text-zinc-500">Your secret word</p>
-      <p className="thai mt-1 text-4xl font-black text-indigo-300">{you.word}</p>
-      {you.gloss && <p className="mt-1 text-sm text-zinc-400">({you.gloss})</p>}
-      <p className="mt-2 text-xs text-zinc-500">Describe it — don't say it. Someone here has a different word…</p>
+    <div className={`relative ${cardClass}`}>
+      <button
+        onClick={() => setHidden((h) => !h)}
+        className="absolute right-3 top-3 text-xs text-zinc-400 hover:text-zinc-100"
+      >
+        {hidden ? "👁 Show" : "🙈 Hide"}
+      </button>
+      {hidden ? (
+        <button onClick={() => setHidden(false)} className="flex w-full flex-col items-center gap-1 py-6">
+          <span className="text-3xl">🙈</span>
+          <span className="text-sm text-zinc-400">Hidden — tap to reveal</span>
+        </button>
+      ) : (
+        body
+      )}
     </div>
   );
 }
