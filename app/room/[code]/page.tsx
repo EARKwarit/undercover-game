@@ -27,11 +27,12 @@ type RoomView = {
   clues: { round: number; playerId: string; name: string; text: string }[];
   votes: { voter: string; target: string }[];
   lastResult: {
-    eliminatedId: string;
+    eliminatedId: string | null;
     name: string;
-    role: "civilian" | "undercover" | "mrwhite";
+    role: "civilian" | "undercover" | "mrwhite" | null;
     word: string | null;
     tie?: boolean;
+    skipped?: boolean;
     mrWhiteGuess?: string;
     mrWhiteCorrect?: boolean;
   } | null;
@@ -381,6 +382,9 @@ function VotePhase({ state, pid, act }: { state: RoomView; pid: string; act: (a:
           </button>
         ))}
       </div>
+      <button className="btn btn-ghost w-full !bg-zinc-800/60 text-zinc-400" onClick={() => act("vote", { targetId: "skip" })}>
+        🙈 Skip — eliminate no one
+      </button>
     </div>
   );
 }
@@ -425,12 +429,18 @@ function RevealPhase({ state, pid, act }: { state: RoomView; pid: string; act: (
       {r ? (
         <div className="rounded-xl bg-zinc-800/50 p-4">
           {r.tie && <p className="mb-1 text-xs text-amber-300">It was a tie — broken randomly.</p>}
-          <p>
-            <b>{r.name}</b> was eliminated.
-          </p>
-          <p className="mt-1">
-            They were the <b className={roleColor(r.role)}>{ROLE_LABEL[r.role]}</b>.
-          </p>
+          {r.skipped ? (
+            <p>The group voted to <b>skip</b> — no one was eliminated this round.</p>
+          ) : (
+            <>
+              <p>
+                <b>{r.name}</b> was eliminated.
+              </p>
+              <p className="mt-1">
+                They were the <b className={roleColor(r.role!)}>{ROLE_LABEL[r.role!]}</b>.
+              </p>
+            </>
+          )}
           {r.mrWhiteGuess !== undefined && (
             <p className="mt-1 text-sm">
               Mr. White guessed <span className="thai font-semibold">{r.mrWhiteGuess}</span> —{" "}

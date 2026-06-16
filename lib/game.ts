@@ -99,9 +99,12 @@ export function submitVote(room: Room, playerId: string, targetId: string): stri
   if (room.phase !== "vote") return "It's not the voting phase";
   const voter = room.players.find((p) => p.id === playerId);
   if (!voter || !voter.alive) return "You can't vote";
-  if (targetId === playerId) return "You can't vote for yourself";
-  const target = room.players.find((p) => p.id === targetId);
-  if (!target || !target.alive) return "Invalid vote target";
+  // "skip" is an abstention — a vote to eliminate no one this round.
+  if (targetId !== "skip") {
+    if (targetId === playerId) return "You can't vote for yourself";
+    const target = room.players.find((p) => p.id === targetId);
+    if (!target || !target.alive) return "Invalid vote target";
+  }
 
   const existing = room.votes.find((v) => v.round === room.round && v.voterId === playerId);
   if (existing) existing.targetId = targetId;
@@ -123,6 +126,13 @@ function tally(room: Room) {
   const top = [...counts.entries()].filter(([, c]) => c === max).map(([id]) => id);
   const tie = top.length > 1;
   const eliminatedId = top[Math.floor(Math.random() * top.length)];
+
+  // The group voted to skip — no one is eliminated this round.
+  if (eliminatedId === "skip") {
+    room.lastResult = { eliminatedId: null, role: null, word: null, tie, skipped: true };
+    room.phase = "reveal";
+    return;
+  }
 
   const p = room.players.find((pl) => pl.id === eliminatedId)!;
   p.alive = false;
@@ -242,7 +252,7 @@ export function publicView(room: Room, viewerId: string) {
   const showVotes = room.phase === "reveal" || room.phase === "guess" || ended;
   const votes = (showVotes ? room.votes.filter((v) => v.round === room.round) : []).map((v) => ({
     voter: room.players.find((p) => p.id === v.voterId)?.name || "?",
-    target: room.players.find((p) => p.id === v.targetId)?.name || "?",
+    target: v.targetId === "skip" ? "Skip" : room.players.find((p) => p.id === v.targetId)?.name || "?",
   }));
 
   let lastResult: any = null;

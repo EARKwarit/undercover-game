@@ -30,10 +30,11 @@ export interface Settings {
 }
 
 export interface LastResult {
-  eliminatedId: string;
-  role: Role;
+  eliminatedId: string | null;
+  role: Role | null;
   word: string | null;
   tie?: boolean;
+  skipped?: boolean;
   mrWhiteGuess?: string;
   mrWhiteCorrect?: boolean;
 }
