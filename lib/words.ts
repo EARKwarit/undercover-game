@@ -1,56 +1,16 @@
 import type { WordPair } from "./types";
 
 // Word pairs for Undercover — English (Latin script), chosen to be viral /
-// well-known on Thai social media. Pairs are intentionally HARD: two members of
-// the same group, the same franchise/universe, or the same food/brand family,
-// so clues are highly ambiguous. The gloss is a short private hint for whoever
-// holds that word. The app picks one pair per game at random and randomly swaps
-// which side is the Civilians' word.
+// well-known on Thai social media. Pairs are intentionally HARD: two things from
+// the same family/category, so clues are highly ambiguous. The gloss is a short
+// private hint for whoever holds that word. The app picks one pair per game at
+// random and randomly swaps which side is the Civilians' word.
 export const WORD_PAIRS: WordPair[] = [
-  // ---- Influencers (TikTokers / YouTubers), matched by gender / age / niche ----
-  { civilian: "Charli D'Amelio", civilianGloss: "US TikTok dance superstar", undercover: "Addison Rae", undercoverGloss: "US TikTok dance superstar (same era)" },
-  { civilian: "IShowSpeed", civilianGloss: "young US livestreamer (chaotic IRL)", undercover: "Kai Cenat", undercoverGloss: "young US livestreamer (chaotic IRL)" },
-  { civilian: "KSI", civilianGloss: "YouTuber-boxer, Prime co-founder", undercover: "Logan Paul", undercoverGloss: "YouTuber-boxer, Prime co-founder" },
-  { civilian: "Markiplier", civilianGloss: "US let's-play gaming YouTuber", undercover: "Jacksepticeye", undercoverGloss: "let's-play gaming YouTuber (loud, funny)" },
+  // ---- Thai influencers (TikTokers / YouTubers), matched by niche ----
   { civilian: "zbing z.", civilianGloss: "Thailand's #1 gaming YouTuber (female)", undercover: "Heart Rocker", undercoverGloss: "top Thai gaming YouTuber (male)" },
-  { civilian: "My Mate Nate", civilianGloss: "foreigner prank/variety YouTuber in TH", undercover: "Bie The Ska", undercoverGloss: "Thai comedy/variety YouTuber (male)" },
   { civilian: "KaykaiSalaider", civilianGloss: "young Thai comedy YouTuber (female)", undercover: "Point of View", undercoverGloss: "young Thai storytelling YouTuber (female)" },
+  { civilian: "My Mate Nate", civilianGloss: "foreigner prank/variety YouTuber in TH", undercover: "Bie The Ska", undercoverGloss: "Thai comedy/variety YouTuber (male)" },
   { civilian: "Pimtha", civilianGloss: "Thai fashion/beauty influencer (female)", undercover: "Pearypie", undercoverGloss: "Thai makeup-artist influencer (female)" },
-
-  // ---- K-pop: SAME-GROUP members ----
-  { civilian: "Lisa", civilianGloss: "BLACKPINK — Thai rapper-dancer", undercover: "Rosé", undercoverGloss: "BLACKPINK — main vocalist" },
-  { civilian: "Jennie", civilianGloss: "BLACKPINK — rapper/vocalist", undercover: "Jisoo", undercoverGloss: "BLACKPINK — visual/vocalist" },
-  { civilian: "Lisa", civilianGloss: "BLACKPINK — Thai rapper-dancer", undercover: "Jennie", undercoverGloss: "BLACKPINK — rapper/vocalist" },
-  { civilian: "Rosé", civilianGloss: "BLACKPINK — main vocalist", undercover: "Jisoo", undercoverGloss: "BLACKPINK — visual/vocalist" },
-  { civilian: "Jungkook", civilianGloss: "BTS — maknae, main vocalist", undercover: "Jimin", undercoverGloss: "BTS — vocalist/dancer" },
-  { civilian: "V", civilianGloss: "BTS — vocalist (Taehyung)", undercover: "Jin", undercoverGloss: "BTS — eldest, vocalist" },
-  { civilian: "RM", civilianGloss: "BTS — leader, rapper", undercover: "Suga", undercoverGloss: "BTS — rapper/producer" },
-  { civilian: "J-Hope", civilianGloss: "BTS — rapper/dancer", undercover: "Jimin", undercoverGloss: "BTS — vocalist/dancer" },
-  { civilian: "Nayeon", civilianGloss: "TWICE — lead vocalist", undercover: "Tzuyu", undercoverGloss: "TWICE — Taiwanese visual" },
-  { civilian: "Sana", civilianGloss: "TWICE — Japanese member", undercover: "Momo", undercoverGloss: "TWICE — Japanese main dancer" },
-  { civilian: "Mina", civilianGloss: "TWICE — Japanese member", undercover: "Dahyun", undercoverGloss: "TWICE — rapper/vocalist" },
-  { civilian: "Minji", civilianGloss: "NewJeans — leader", undercover: "Hanni", undercoverGloss: "NewJeans — Vietnamese-Australian member" },
-  { civilian: "Haerin", civilianGloss: "NewJeans — vocalist (cat-like)", undercover: "Hyein", undercoverGloss: "NewJeans — youngest member" },
-  { civilian: "Danielle", civilianGloss: "NewJeans — Korean-Australian member", undercover: "Hanni", undercoverGloss: "NewJeans — Vietnamese-Australian member" },
-  { civilian: "Karina", civilianGloss: "aespa — leader, visual", undercover: "Winter", undercoverGloss: "aespa — main vocalist" },
-  { civilian: "Giselle", civilianGloss: "aespa — rapper", undercover: "Ningning", undercoverGloss: "aespa — Chinese main vocalist" },
-  { civilian: "Sakura", civilianGloss: "LE SSERAFIM — Japanese member", undercover: "Kim Chaewon", undercoverGloss: "LE SSERAFIM — leader" },
-  { civilian: "Huh Yunjin", civilianGloss: "LE SSERAFIM — vocalist", undercover: "Hong Eunchae", undercoverGloss: "LE SSERAFIM — youngest" },
-  { civilian: "Mingyu", civilianGloss: "SEVENTEEN — tall visual/rapper", undercover: "Wonwoo", undercoverGloss: "SEVENTEEN — deep-voiced rapper" },
-  { civilian: "S.Coups", civilianGloss: "SEVENTEEN — leader", undercover: "Hoshi", undercoverGloss: "SEVENTEEN — performance leader" },
-  { civilian: "Woozi", civilianGloss: "SEVENTEEN — producer", undercover: "Vernon", undercoverGloss: "SEVENTEEN — Korean-American rapper" },
-  { civilian: "Bang Chan", civilianGloss: "Stray Kids — leader", undercover: "Felix", undercoverGloss: "Stray Kids — deep-voiced Aussie" },
-  { civilian: "Hyunjin", civilianGloss: "Stray Kids — dancer/visual", undercover: "Lee Know", undercoverGloss: "Stray Kids — main dancer" },
-  { civilian: "Han", civilianGloss: "Stray Kids — rapper/producer", undercover: "Changbin", undercoverGloss: "Stray Kids — rapper" },
-  { civilian: "Heeseung", civilianGloss: "ENHYPEN — main vocalist", undercover: "Jay", undercoverGloss: "ENHYPEN — rapper" },
-  { civilian: "Sunghoon", civilianGloss: "ENHYPEN — ex-figure-skater", undercover: "Jungwon", undercoverGloss: "ENHYPEN — leader" },
-  { civilian: "Soobin", civilianGloss: "TXT — leader, tall", undercover: "Yeonjun", undercoverGloss: "TXT — eldest, rapper-dancer" },
-  { civilian: "Beomgyu", civilianGloss: "TXT — guitarist member", undercover: "Taehyun", undercoverGloss: "TXT — vocalist" },
-
-  // ---- T-pop / Thai idols: same group or duo ----
-  { civilian: "Cherprang", civilianGloss: "BNK48 — gen-1 captain", undercover: "Music", undercoverGloss: "BNK48 — gen-1 member" },
-  { civilian: "Mobile", civilianGloss: "BNK48 — gen-1 member", undercover: "Pun", undercoverGloss: "BNK48 — gen-1 member" },
-  { civilian: "Billkin", civilianGloss: "half of the Billkin × PP duo (singer-actor)", undercover: "PP Krit", undercoverGloss: "half of the Billkin × PP duo (singer-actor)" },
 
   // ---- Movies / franchises: same universe ----
   { civilian: "Iron Man", civilianGloss: "Marvel — armored genius", undercover: "Captain America", undercoverGloss: "Marvel — shield super-soldier" },
@@ -78,13 +38,13 @@ export const WORD_PAIRS: WordPair[] = [
   { civilian: "Pikachu", civilianGloss: "Pokémon — electric mascot", undercover: "Eevee", undercoverGloss: "Pokémon — the evolving one" },
   { civilian: "Charizard", civilianGloss: "Pokémon — fire/flying dragon", undercover: "Blastoise", undercoverGloss: "Pokémon — water cannon turtle" },
 
-  // ---- Thai films & series: same genre/lane ----
+  // ---- Thai films & series ----
   { civilian: "Pee Mak", civilianGloss: "Thai ghost-wife film", undercover: "Nang Nak", undercoverGloss: "classic Thai ghost-wife film" },
   { civilian: "Bad Genius", civilianGloss: "Thai exam-cheating thriller", undercover: "The Gifted", undercoverGloss: "Thai gifted-students series" },
   { civilian: "Girl from Nowhere", civilianGloss: "Thai dark school series (Netflix)", undercover: "Hormones", undercoverGloss: "Thai teen drama series" },
   { civilian: "KinnPorsche", civilianGloss: "Thai mafia BL series", undercover: "2gether", undercoverGloss: "Thai school BL series" },
 
-  // ---- K-content: same lane ----
+  // ---- K-content ----
   { civilian: "Squid Game", civilianGloss: "Korean deadly-games Netflix hit", undercover: "All of Us Are Dead", undercoverGloss: "Korean zombie-school Netflix hit" },
   { civilian: "Crash Landing on You", civilianGloss: "K-drama fantasy romance", undercover: "Goblin", undercoverGloss: "K-drama fantasy romance" },
 
@@ -115,7 +75,7 @@ export const WORD_PAIRS: WordPair[] = [
   { civilian: "Durian", civilianGloss: "king of fruits (smelly)", undercover: "Mangosteen", undercoverGloss: "queen of fruits" },
   { civilian: "Boba", civilianGloss: "bubble / pearl milk tea", undercover: "Cha Yen", undercoverGloss: "Thai iced milk tea" },
 
-  // ---- Apps / brands: same category ----
+  // ---- Apps / platforms ----
   { civilian: "Shopee", civilianGloss: "orange shopping app", undercover: "Lazada", undercoverGloss: "blue shopping app" },
   { civilian: "Grab", civilianGloss: "ride & food delivery app", undercover: "LINE MAN", undercoverGloss: "Thai food delivery app" },
   { civilian: "TikTok", civilianGloss: "short-video app", undercover: "Reels", undercoverGloss: "Instagram's short videos" },
@@ -126,8 +86,45 @@ export const WORD_PAIRS: WordPair[] = [
   { civilian: "LINE", civilianGloss: "Thailand's main chat app", undercover: "WhatsApp", undercoverGloss: "global messaging app" },
   { civilian: "Netflix", civilianGloss: "red streaming giant", undercover: "Disney+", undercoverGloss: "Disney's streaming service" },
   { civilian: "Starbucks", civilianGloss: "global coffee chain", undercover: "Café Amazon", undercoverGloss: "Thai PTT coffee chain" },
+
+  // ---- Brands ----
+  { civilian: "Nike", civilianGloss: "sportswear — the swoosh", undercover: "Adidas", undercoverGloss: "sportswear — three stripes" },
+  { civilian: "Gucci", civilianGloss: "Italian luxury fashion house", undercover: "Prada", undercoverGloss: "Italian luxury fashion house" },
+  { civilian: "Louis Vuitton", civilianGloss: "luxury bags & fashion (LV)", undercover: "Chanel", undercoverGloss: "luxury fashion & perfume" },
+  { civilian: "McDonald's", civilianGloss: "fast food — golden arches", undercover: "KFC", undercoverGloss: "fast food — fried chicken" },
+  { civilian: "Pizza Hut", civilianGloss: "pizza chain (red roof)", undercover: "Domino's", undercoverGloss: "pizza delivery chain" },
+  { civilian: "Uniqlo", civilianGloss: "Japanese basics fast-fashion", undercover: "H&M", undercoverGloss: "Swedish fast-fashion chain" },
+  { civilian: "Rolex", civilianGloss: "luxury Swiss watch (crown)", undercover: "Omega", undercoverGloss: "luxury Swiss watch" },
+  { civilian: "Visa", civilianGloss: "payment card network", undercover: "Mastercard", undercoverGloss: "payment card network" },
   { civilian: "Coke", civilianGloss: "the classic red cola", undercover: "Pepsi", undercoverGloss: "the blue cola rival" },
+  { civilian: "Lay's", civilianGloss: "potato chips in a bag", undercover: "Pringles", undercoverGloss: "stacked chips in a tube" },
+
+  // ---- Cars / vehicles ----
+  { civilian: "Toyota", civilianGloss: "Japanese car giant", undercover: "Honda", undercoverGloss: "Japanese car giant" },
+  { civilian: "BMW", civilianGloss: "German luxury car", undercover: "Mercedes-Benz", undercoverGloss: "German luxury car" },
+  { civilian: "Ferrari", civilianGloss: "Italian supercar (prancing horse)", undercover: "Lamborghini", undercoverGloss: "Italian supercar (raging bull)" },
+  { civilian: "Honda", civilianGloss: "motorbike brand", undercover: "Yamaha", undercoverGloss: "motorbike brand" },
+  { civilian: "Toyota Vios", civilianGloss: "popular Thai eco-sedan", undercover: "Honda City", undercoverGloss: "popular Thai eco-sedan" },
   { civilian: "Tesla", civilianGloss: "American EV brand", undercover: "BYD", undercoverGloss: "Chinese EV brand (big in TH)" },
+  { civilian: "Mazda", civilianGloss: "Japanese car brand (in TH)", undercover: "Mitsubishi", undercoverGloss: "Japanese car brand (in TH)" },
+  { civilian: "Isuzu D-Max", civilianGloss: "Thai pickup-truck king", undercover: "Toyota Hilux", undercoverGloss: "Thai pickup-truck king" },
+
+  // ---- Math operators / concepts (high-school -> university) ----
+  { civilian: "Plus", civilianGloss: "addition ( + )", undercover: "Minus", undercoverGloss: "subtraction ( − )" },
+  { civilian: "Multiply", civilianGloss: "multiplication ( × )", undercover: "Divide", undercoverGloss: "division ( ÷ )" },
+  { civilian: "Sine", civilianGloss: "trig ratio: sin", undercover: "Cosine", undercoverGloss: "trig ratio: cos" },
+  { civilian: "Tangent", civilianGloss: "trig ratio: tan", undercover: "Cotangent", undercoverGloss: "trig ratio: cot" },
+  { civilian: "Square", civilianGloss: "raise to power 2 ( x² )", undercover: "Square Root", undercoverGloss: "the inverse ( √x )" },
+  { civilian: "Logarithm", civilianGloss: "log of a number", undercover: "Exponential", undercoverGloss: "e to the power x ( eˣ )" },
+  { civilian: "Greater Than", civilianGloss: "the symbol ( > )", undercover: "Less Than", undercoverGloss: "the symbol ( < )" },
+  { civilian: "Factorial", civilianGloss: "n! = n×(n−1)×…", undercover: "Power", undercoverGloss: "exponent ( xⁿ )" },
+  { civilian: "Pi", civilianGloss: "π ≈ 3.14159", undercover: "Euler's Number", undercoverGloss: "e ≈ 2.71828" },
+  { civilian: "Derivative", civilianGloss: "rate of change ( d/dx )", undercover: "Integral", undercoverGloss: "area under the curve ( ∫ )" },
+  { civilian: "Summation", civilianGloss: "add a series ( Σ )", undercover: "Product", undercoverGloss: "multiply a series ( Π )" },
+  { civilian: "Limit", civilianGloss: "value approached ( lim )", undercover: "Infinity", undercoverGloss: "unbounded ( ∞ )" },
+  { civilian: "Matrix", civilianGloss: "grid of numbers", undercover: "Vector", undercoverGloss: "quantity with direction" },
+  { civilian: "Dot Product", civilianGloss: "a·b → a scalar", undercover: "Cross Product", undercoverGloss: "a×b → a vector" },
+  { civilian: "Permutation", civilianGloss: "nPr — order matters", undercover: "Combination", undercoverGloss: "nCr — order doesn't" },
 
   // ---- Sports / icons / misc ----
   { civilian: "Messi", civilianGloss: "Argentine football GOAT", undercover: "Ronaldo", undercoverGloss: "Portuguese football GOAT" },
