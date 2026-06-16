@@ -1,8 +1,25 @@
 import { Redis } from "@upstash/redis";
 import type { Room } from "./types";
 
-const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+// Resolve the Upstash REST credentials. The Vercel/Upstash integration may
+// apply a custom prefix to the env var names (e.g. STORAGE_KV_REST_API_URL),
+// so we match by suffix rather than expecting an exact name.
+function resolveRedisEnv(): { url?: string; token?: string } {
+  const env = process.env;
+  let url = env.KV_REST_API_URL || env.UPSTASH_REDIS_REST_URL;
+  let token = env.KV_REST_API_TOKEN || env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) {
+    for (const key of Object.keys(env)) {
+      const v = env[key];
+      if (!v) continue;
+      if (!url && (key.endsWith("KV_REST_API_URL") || key.endsWith("UPSTASH_REDIS_REST_URL"))) url = v;
+      if (!token && (key.endsWith("KV_REST_API_TOKEN") || key.endsWith("UPSTASH_REDIS_REST_TOKEN"))) token = v;
+    }
+  }
+  return { url, token };
+}
+
+const { url, token } = resolveRedisEnv();
 
 const redis = url && token ? new Redis({ url, token }) : null;
 
