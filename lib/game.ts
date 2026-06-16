@@ -248,7 +248,9 @@ export function publicView(room: Room, viewerId: string) {
   let lastResult: any = null;
   if (room.lastResult) {
     const ep = room.players.find((p) => p.id === room.lastResult!.eliminatedId);
-    lastResult = { ...room.lastResult, name: ep?.name || "?" };
+    // Never expose the eliminated player's word mid-game — only their role.
+    // The actual words are revealed on the end screen.
+    lastResult = { ...room.lastResult, word: null, name: ep?.name || "?" };
   }
 
   return {

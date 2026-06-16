@@ -429,14 +429,7 @@ function RevealPhase({ state, pid, act }: { state: RoomView; pid: string; act: (
             <b>{r.name}</b> was eliminated.
           </p>
           <p className="mt-1">
-            They were the <b className={roleColor(r.role)}>{ROLE_LABEL[r.role]}</b>
-            {r.word && (
-              <>
-                {" "}
-                · word was <span className="thai font-semibold">{r.word}</span>
-              </>
-            )}
-            .
+            They were the <b className={roleColor(r.role)}>{ROLE_LABEL[r.role]}</b>.
           </p>
           {r.mrWhiteGuess !== undefined && (
             <p className="mt-1 text-sm">
