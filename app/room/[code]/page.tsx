@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getPlayerId, getStoredName, setStoredName } from "../../lib-client";
+import { CATEGORIES } from "@/lib/categories";
+
+const ALL_CATEGORY_KEYS = CATEGORIES.map((c) => c.key);
 
 type PlayerView = {
   id: string;
@@ -19,7 +22,7 @@ type RoomView = {
   phase: "lobby" | "clue" | "vote" | "reveal" | "guess" | "ended";
   round: number;
   hostId: string;
-  settings: { numUndercover: number; mrWhite: boolean };
+  settings: { numUndercover: number; mrWhite: boolean; categories: string[] };
   winner: "civilians" | "infiltrators" | "mrwhite" | null;
   players: PlayerView[];
   currentTurnId: string | null;
@@ -299,9 +302,22 @@ function Lobby({ state, pid, act }: { state: RoomView; pid: string; act: (a: str
   const isHost = state.you!.isHost;
   const n = state.players.length;
   const s = state.settings;
-  const setUc = (v: number) => act("settings", { numUndercover: v, mrWhite: s.mrWhite });
-  const setMw = (v: boolean) => act("settings", { numUndercover: s.numUndercover, mrWhite: v });
   const maxUc = Math.max(1, n - 1 - (s.mrWhite ? 1 : 0));
+  const allOn = !s.categories || s.categories.length === 0;
+  const catOn = (key: string) => allOn || s.categories.includes(key);
+
+  // Always send the full settings object so one change doesn't reset the others.
+  const save = (partial: Partial<RoomView["settings"]>) =>
+    act("settings", { numUndercover: s.numUndercover, mrWhite: s.mrWhite, categories: s.categories, ...partial });
+
+  const toggleCat = (key: string) => {
+    const base = allOn ? [...ALL_CATEGORY_KEYS] : [...s.categories];
+    const i = base.indexOf(key);
+    if (i >= 0) base.splice(i, 1);
+    else base.push(key);
+    if (base.length === 0) return; // keep at least one category in play
+    save({ categories: base.length === ALL_CATEGORY_KEYS.length ? [] : base });
+  };
 
   return (
     <div className="card space-y-4">
@@ -309,27 +325,56 @@ function Lobby({ state, pid, act }: { state: RoomView; pid: string; act: (a: str
       <p className="text-sm text-zinc-400">Share the code or tap it up top to copy an invite link. Need at least 3 players.</p>
 
       {isHost ? (
-        <div className="space-y-3 rounded-xl bg-zinc-800/50 p-4">
-          <div className="flex items-center justify-between">
-            <span className="font-medium">Undercover players</span>
-            <div className="flex items-center gap-3">
-              <button className="btn btn-ghost h-9 w-9 !p-0 text-lg" onClick={() => setUc(s.numUndercover - 1)} disabled={s.numUndercover <= 1}>
-                −
-              </button>
-              <span className="w-6 text-center text-lg font-bold">{s.numUndercover}</span>
-              <button className="btn btn-ghost h-9 w-9 !p-0 text-lg" onClick={() => setUc(s.numUndercover + 1)} disabled={s.numUndercover >= maxUc}>
-                +
+        <>
+          <div className="space-y-3 rounded-xl bg-zinc-800/50 p-4">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Undercover players</span>
+              <div className="flex items-center gap-3">
+                <button className="btn btn-ghost h-9 w-9 !p-0 text-lg" onClick={() => save({ numUndercover: s.numUndercover - 1 })} disabled={s.numUndercover <= 1}>
+                  −
+                </button>
+                <span className="w-6 text-center text-lg font-bold">{s.numUndercover}</span>
+                <button className="btn btn-ghost h-9 w-9 !p-0 text-lg" onClick={() => save({ numUndercover: s.numUndercover + 1 })} disabled={s.numUndercover >= maxUc}>
+                  +
+                </button>
+              </div>
+            </div>
+            <label className="flex items-center justify-between">
+              <span className="font-medium">Add a Mr. White 🤍</span>
+              <input type="checkbox" className="h-5 w-5 accent-indigo-500" checked={s.mrWhite} onChange={(e) => save({ mrWhite: e.target.checked })} />
+            </label>
+          </div>
+
+          <div className="space-y-2 rounded-xl bg-zinc-800/50 p-4">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Categories in play</span>
+              <button className="text-xs text-zinc-400 hover:text-zinc-100" onClick={() => save({ categories: [] })}>
+                Select all
               </button>
             </div>
+            <div className="flex flex-wrap gap-2">
+              {CATEGORIES.map((c) => (
+                <button
+                  key={c.key}
+                  onClick={() => toggleCat(c.key)}
+                  className={`chip ${catOn(c.key) ? "!bg-indigo-500 !text-white" : "opacity-40"}`}
+                >
+                  {c.emoji} {c.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-zinc-500">
+              {allOn ? "All categories in play." : `${s.categories.length} selected — tap to toggle.`}
+            </p>
           </div>
-          <label className="flex items-center justify-between">
-            <span className="font-medium">Add a Mr. White 🤍</span>
-            <input type="checkbox" className="h-5 w-5 accent-indigo-500" checked={s.mrWhite} onChange={(e) => setMw(e.target.checked)} />
-          </label>
-        </div>
+        </>
       ) : (
         <div className="rounded-xl bg-zinc-800/50 p-4 text-sm text-zinc-300">
-          {s.numUndercover} undercover{s.mrWhite ? " + Mr. White" : ""}. Waiting for the host to start…
+          {s.numUndercover} undercover{s.mrWhite ? " + Mr. White" : ""}.
+          <div className="mt-1 text-zinc-400">
+            Categories: {allOn ? "All" : CATEGORIES.filter((c) => s.categories.includes(c.key)).map((c) => c.label).join(", ")}
+          </div>
+          <div className="mt-2">Waiting for the host to start…</div>
         </div>
       )}
 

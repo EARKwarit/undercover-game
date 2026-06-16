@@ -1,5 +1,8 @@
 import type { Room, Settings, WordPair, Winner } from "./types";
 import { WORD_PAIRS } from "./words";
+import { CATEGORY_KEYS } from "./categories";
+
+const VALID_CATEGORIES = new Set<string>(CATEGORY_KEYS);
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -22,7 +25,11 @@ export function sanitizeSettings(payload: any, numPlayers: number): Settings {
   if (!Number.isFinite(numUndercover)) numUndercover = 1;
   const maxUc = Math.max(1, numPlayers - 1);
   numUndercover = Math.min(Math.max(1, numUndercover), maxUc);
-  return { numUndercover, mrWhite };
+  // Keep only valid category keys; empty means "all categories".
+  const categories = Array.isArray(payload?.categories)
+    ? Array.from(new Set(payload.categories.filter((c: unknown) => typeof c === "string" && VALID_CATEGORIES.has(c)))) as string[]
+    : [];
+  return { numUndercover, mrWhite, categories };
 }
 
 function samePair(a: WordPair, b: WordPair) {
@@ -32,14 +39,23 @@ function samePair(a: WordPair, b: WordPair) {
   );
 }
 
+// The word pool for this room, limited to the categories in play (empty = all).
+function poolFor(room: Room): WordPair[] {
+  const cats = room.settings.categories;
+  if (!cats || cats.length === 0) return WORD_PAIRS;
+  const filtered = WORD_PAIRS.filter((p) => cats.includes(p.category));
+  return filtered.length ? filtered : WORD_PAIRS;
+}
+
 // Pick a word pair, assign roles/words, and (re)start at round 1, clue phase.
 // `avoid` lets a re-deal steer away from the pair just played.
 function deal(room: Room, avoid?: WordPair | null) {
-  let pair = WORD_PAIRS[Math.floor(Math.random() * WORD_PAIRS.length)];
-  if (avoid && WORD_PAIRS.length > 1) {
+  const pool = poolFor(room);
+  let pair = pool[Math.floor(Math.random() * pool.length)];
+  if (avoid && pool.length > 1) {
     let guard = 0;
     while (samePair(pair, avoid) && guard++ < 25) {
-      pair = WORD_PAIRS[Math.floor(Math.random() * WORD_PAIRS.length)];
+      pair = pool[Math.floor(Math.random() * pool.length)];
     }
   }
 
@@ -73,7 +89,7 @@ function deal(room: Room, avoid?: WordPair | null) {
     }
   }
 
-  room.pair = { civilian: civWord, civilianGloss: civGloss, undercover: ucWord, undercoverGloss: ucGloss };
+  room.pair = { civilian: civWord, civilianGloss: civGloss, undercover: ucWord, undercoverGloss: ucGloss, category: pair.category };
   room.round = 1;
   room.clues = [];
   room.votes = [];

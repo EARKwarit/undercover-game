@@ -27,6 +27,8 @@ export interface Vote {
 export interface Settings {
   numUndercover: number;
   mrWhite: boolean;
+  // Category keys in play. Empty = all categories.
+  categories: string[];
 }
 
 export interface LastResult {
@@ -44,6 +46,7 @@ export interface WordPair {
   civilianGloss: string;
   undercover: string;
   undercoverGloss: string;
+  category: string;
 }
 
 export interface Room {

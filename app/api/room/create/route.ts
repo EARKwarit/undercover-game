@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     hostId: playerId,
     phase: "lobby",
     round: 0,
-    settings: { numUndercover: 1, mrWhite: false },
+    settings: { numUndercover: 1, mrWhite: false, categories: [] },
     players: [
       { id: playerId, name: String(name).slice(0, 20), isHost: true, alive: true, role: null, word: null, gloss: null },
     ],
