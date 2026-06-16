@@ -29,7 +29,8 @@ export function sanitizeSettings(payload: any, numPlayers: number): Settings {
   const categories = Array.isArray(payload?.categories)
     ? Array.from(new Set(payload.categories.filter((c: unknown) => typeof c === "string" && VALID_CATEGORIES.has(c)))) as string[]
     : [];
-  return { numUndercover, mrWhite, categories };
+  const faceToFace = !!payload?.faceToFace;
+  return { numUndercover, mrWhite, categories, faceToFace };
 }
 
 function samePair(a: WordPair, b: WordPair) {
@@ -144,6 +145,7 @@ export function submitClue(room: Room, playerId: string, text: string): string |
 
 export function submitVote(room: Room, playerId: string, targetId: string): string | null {
   if (room.phase !== "vote") return "It's not the voting phase";
+  if (room.settings.faceToFace) return "Face-to-face mode: the host records the result";
   const voter = room.players.find((p) => p.id === playerId);
   if (!voter || !voter.alive) return "You can't vote";
   // "skip" is an abstention — a vote to eliminate no one this round.
@@ -174,7 +176,13 @@ function tally(room: Room) {
   const tie = top.length > 1;
   const eliminatedId = top[Math.floor(Math.random() * top.length)];
 
-  // The group voted to skip — no one is eliminated this round.
+  resolveElimination(room, eliminatedId, tie);
+}
+
+// Eliminate a player (or skip) and move to the right next phase. Shared by the
+// vote tally and the host's manual (face-to-face) elimination.
+function resolveElimination(room: Room, eliminatedId: string, tie: boolean) {
+  // No one is eliminated this round.
   if (eliminatedId === "skip") {
     room.lastResult = { eliminatedId: null, role: null, word: null, tie, skipped: true };
     room.phase = "reveal";
@@ -195,6 +203,20 @@ function tally(room: Room) {
   const w = evaluateWinner(room);
   room.winner = w;
   room.phase = w ? "ended" : "reveal";
+}
+
+// Face-to-face mode: the host directly eliminates the player chosen by an
+// out-loud vote (or "skip" for no elimination).
+export function hostEliminate(room: Room, playerId: string, targetId: string): string | null {
+  if (playerId !== room.hostId) return "Only the host can eliminate";
+  if (!room.settings.faceToFace) return "Enable face-to-face mode first";
+  if (room.phase !== "vote") return "It's not the voting phase";
+  if (targetId !== "skip") {
+    const target = room.players.find((p) => p.id === targetId);
+    if (!target || !target.alive) return "Invalid target";
+  }
+  resolveElimination(room, targetId, false);
+  return null;
 }
 
 export function submitGuess(room: Room, playerId: string, guess: string): string | null {

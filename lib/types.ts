@@ -29,6 +29,9 @@ export interface Settings {
   mrWhite: boolean;
   // Category keys in play. Empty = all categories.
   categories: string[];
+  // Face-to-face mode: skip in-app voting; the host eliminates after an
+  // out-loud vote.
+  faceToFace: boolean;
 }
 
 export interface LastResult {

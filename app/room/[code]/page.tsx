@@ -22,7 +22,7 @@ type RoomView = {
   phase: "lobby" | "clue" | "vote" | "reveal" | "guess" | "ended";
   round: number;
   hostId: string;
-  settings: { numUndercover: number; mrWhite: boolean; categories: string[] };
+  settings: { numUndercover: number; mrWhite: boolean; categories: string[]; faceToFace: boolean };
   winner: "civilians" | "infiltrators" | "mrwhite" | null;
   players: PlayerView[];
   currentTurnId: string | null;
@@ -343,6 +343,13 @@ function Lobby({ state, pid, act }: { state: RoomView; pid: string; act: (a: str
               <span className="font-medium">Add a Mr. White 🤍</span>
               <input type="checkbox" className="h-5 w-5 accent-indigo-500" checked={s.mrWhite} onChange={(e) => save({ mrWhite: e.target.checked })} />
             </label>
+            <label className="flex items-center justify-between gap-3">
+              <span>
+                <span className="font-medium">Face-to-face mode 🪑</span>
+                <span className="block text-xs text-zinc-400">Vote out loud; host taps who's eliminated.</span>
+              </span>
+              <input type="checkbox" className="h-5 w-5 shrink-0 accent-indigo-500" checked={!!s.faceToFace} onChange={(e) => save({ faceToFace: e.target.checked })} />
+            </label>
           </div>
 
           <div className="space-y-2 rounded-xl bg-zinc-800/50 p-4">
@@ -370,7 +377,8 @@ function Lobby({ state, pid, act }: { state: RoomView; pid: string; act: (a: str
         </>
       ) : (
         <div className="rounded-xl bg-zinc-800/50 p-4 text-sm text-zinc-300">
-          {s.numUndercover} undercover{s.mrWhite ? " + Mr. White" : ""}.
+          {s.numUndercover} undercover{s.mrWhite ? " + Mr. White" : ""}
+          {s.faceToFace ? " · Face-to-face 🪑" : ""}.
           <div className="mt-1 text-zinc-400">
             Categories: {allOn ? "All" : CATEGORIES.filter((c) => s.categories.includes(c.key)).map((c) => c.label).join(", ")}
           </div>
@@ -427,6 +435,36 @@ function VotePhase({ state, pid, act }: { state: RoomView; pid: string; act: (a:
   const candidates = state.players.filter((p) => p.alive && p.id !== pid);
   const votedCount = state.players.filter((p) => p.voted).length;
   const aliveCount = state.players.filter((p) => p.alive).length;
+
+  // Face-to-face mode: vote out loud, host taps who's eliminated.
+  if (state.settings.faceToFace) {
+    if (state.you!.isHost) {
+      const aliveAll = state.players.filter((p) => p.alive);
+      return (
+        <div className="card space-y-3">
+          <h2 className="text-lg font-bold">🪑 Face-to-face vote</h2>
+          <p className="text-sm text-zinc-400">Discuss & vote out loud, then tap who gets eliminated.</p>
+          <div className="grid grid-cols-2 gap-2">
+            {aliveAll.map((p) => (
+              <button key={p.id} className="btn btn-ghost" onClick={() => act("eliminate", { targetId: p.id })}>
+                {p.name}
+                {p.id === state.you!.id ? " (you)" : ""}
+              </button>
+            ))}
+          </div>
+          <button className="btn btn-ghost w-full !bg-zinc-800/60 text-zinc-400" onClick={() => act("eliminate", { targetId: "skip" })}>
+            🙈 No elimination this round
+          </button>
+        </div>
+      );
+    }
+    return (
+      <div className="card">
+        <h2 className="text-lg font-bold">🗣️ Vote out loud!</h2>
+        <p className="mt-1 text-sm text-zinc-400">Discuss as a group and decide who to eliminate. The host will tap the result.</p>
+      </div>
+    );
+  }
 
   if (!state.you!.alive) {
     return (

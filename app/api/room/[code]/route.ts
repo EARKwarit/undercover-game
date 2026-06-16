@@ -5,6 +5,7 @@ import {
   startGame,
   submitClue,
   submitVote,
+  hostEliminate,
   submitGuess,
   nextRound,
   restart,
@@ -52,6 +53,9 @@ export async function POST(req: NextRequest, { params }: { params: { code: strin
         break;
       case "vote":
         err = submitVote(room, playerId, String(payload?.targetId || ""));
+        break;
+      case "eliminate":
+        err = hostEliminate(room, playerId, String(payload?.targetId || ""));
         break;
       case "guess":
         err = submitGuess(room, playerId, String(payload?.guess || ""));
