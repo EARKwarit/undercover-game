@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;700;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-zinc-950 text-zinc-100 antialiased;
+    background-image: radial-gradient(60% 50% at 50% 0%, rgba(99, 102, 241, 0.18), transparent 70%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 font-semibold text-white transition hover:bg-indigo-400 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-ghost {
+    @apply bg-zinc-800 text-zinc-100 hover:bg-zinc-700;
+  }
+  .btn-danger {
+    @apply bg-rose-600 hover:bg-rose-500;
+  }
+  .card {
+    @apply rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5 shadow-xl backdrop-blur;
+  }
+  .input {
+    @apply w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-2.5 text-white outline-none transition focus:border-indigo-500;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-zinc-800 px-3 py-1 text-sm text-zinc-200;
+  }
+  .thai {
+    @apply font-thai;
+  }
+}
