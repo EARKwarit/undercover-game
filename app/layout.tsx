@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Undercover · Thai Trends",
-  description: "Play the social-deduction party game Undercover with Thai slang & meme words.",
+  description: "Play the social-deduction party game Undercover with viral Thai pop-culture words — actors, movies, music & memes.",
 };
 
 export const viewport: Viewport = {

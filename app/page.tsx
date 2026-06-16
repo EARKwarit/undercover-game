@@ -53,7 +53,7 @@ export default function Home() {
           🕵️ Undercover
         </h1>
         <p className="mt-2 text-zinc-400">
-          Thai slang & meme edition <span className="thai">· ภาษาไทยสายแทรนด์</span>
+          Thai pop-culture edition <span className="thai">· ดารา · หนัง · เพลง · ของไวรัล</span>
         </p>
       </header>
 
@@ -106,7 +106,7 @@ function HowToPlay() {
     <details className="card mt-5 text-sm text-zinc-300">
       <summary className="cursor-pointer font-semibold text-zinc-100">How to play</summary>
       <ul className="mt-3 list-disc space-y-2 pl-5 text-zinc-400">
-        <li>Everyone gets a secret Thai word. Most players (Civilians) share the same word; one or more <b>Undercover</b> players get a similar-but-different word — and they don't know they're the impostor!</li>
+        <li>Everyone gets a secret word — a viral Thai pop-culture pick (a star, movie, song, food, app…). Most players (Civilians) share the same word; one or more <b>Undercover</b> players get a similar-but-different one — and they don't know they're the impostor!</li>
         <li>Each round, players take turns giving a one-word/short clue describing their word — without saying it outright.</li>
         <li>Then everyone votes to eliminate the player they think is Undercover.</li>
         <li><b>Civilians win</b> when all impostors are eliminated. <b>Undercover wins</b> if they survive until they equal the civilians.</li>
