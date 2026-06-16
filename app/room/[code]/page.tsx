@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { QRCodeSVG } from "qrcode.react";
 import { getPlayerId, getStoredName, setStoredName } from "../../lib-client";
 import { CATEGORIES } from "@/lib/categories";
 
@@ -298,6 +299,22 @@ function PhasePanel({ state, pid, act }: { state: RoomView; pid: string; act: (a
   }
 }
 
+function JoinQR({ code }: { code: string }) {
+  const [url, setUrl] = useState("");
+  useEffect(() => {
+    setUrl(`${location.origin}/room/${code}`);
+  }, [code]);
+  if (!url) return null;
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="rounded-2xl bg-white p-3">
+        <QRCodeSVG value={url} size={168} includeMargin />
+      </div>
+      <span className="text-xs text-zinc-500">Scan to join room {code}</span>
+    </div>
+  );
+}
+
 function Lobby({ state, pid, act }: { state: RoomView; pid: string; act: (a: string, p?: any) => void }) {
   const isHost = state.you!.isHost;
   const n = state.players.length;
@@ -322,7 +339,8 @@ function Lobby({ state, pid, act }: { state: RoomView; pid: string; act: (a: str
   return (
     <div className="card space-y-4">
       <h2 className="text-lg font-bold">Lobby · {n} player{n !== 1 ? "s" : ""}</h2>
-      <p className="text-sm text-zinc-400">Share the code or tap it up top to copy an invite link. Need at least 3 players.</p>
+      <p className="text-sm text-zinc-400">Scan the QR, share the code, or tap it up top to copy an invite link. Need at least 3 players.</p>
+      <JoinQR code={state.code} />
 
       {isHost ? (
         <>
