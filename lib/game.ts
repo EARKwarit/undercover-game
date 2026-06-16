@@ -1,4 +1,4 @@
-import type { Room, Settings, Winner } from "./types";
+import type { Room, Settings, WordPair, Winner } from "./types";
 import { WORD_PAIRS } from "./words";
 
 export function shuffle<T>(arr: T[]): T[] {
@@ -25,19 +25,24 @@ export function sanitizeSettings(payload: any, numPlayers: number): Settings {
   return { numUndercover, mrWhite };
 }
 
-export function startGame(room: Room): string | null {
-  if (room.phase !== "lobby") return "Game already started";
-  const n = room.players.length;
-  if (n < 3) return "Need at least 3 players to start";
+function samePair(a: WordPair, b: WordPair) {
+  return (
+    (a.civilian === b.civilian && a.undercover === b.undercover) ||
+    (a.civilian === b.undercover && a.undercover === b.civilian)
+  );
+}
 
-  const uc = room.settings.numUndercover;
-  const mw = room.settings.mrWhite ? 1 : 0;
-  if (uc < 1) return "Need at least 1 undercover";
-  const special = uc + mw;
-  if (special >= n) return "Too many special roles for this many players";
-  if (n - special <= special) return "There must be more civilians than special roles";
+// Pick a word pair, assign roles/words, and (re)start at round 1, clue phase.
+// `avoid` lets a re-deal steer away from the pair just played.
+function deal(room: Room, avoid?: WordPair | null) {
+  let pair = WORD_PAIRS[Math.floor(Math.random() * WORD_PAIRS.length)];
+  if (avoid && WORD_PAIRS.length > 1) {
+    let guard = 0;
+    while (samePair(pair, avoid) && guard++ < 25) {
+      pair = WORD_PAIRS[Math.floor(Math.random() * WORD_PAIRS.length)];
+    }
+  }
 
-  const pair = WORD_PAIRS[Math.floor(Math.random() * WORD_PAIRS.length)];
   // Randomly decide which side of the pair is the "civilian" word this round.
   const swap = Math.random() < 0.5;
   const civWord = swap ? pair.undercover : pair.civilian;
@@ -45,6 +50,8 @@ export function startGame(room: Room): string | null {
   const ucWord = swap ? pair.civilian : pair.undercover;
   const ucGloss = swap ? pair.civilianGloss : pair.undercoverGloss;
 
+  const uc = room.settings.numUndercover;
+  const mw = room.settings.mrWhite ? 1 : 0;
   const ids = shuffle(room.players.map((p) => p.id));
   const ucSet = new Set(ids.slice(0, uc));
   const mwSet = new Set(ids.slice(uc, uc + mw));
@@ -76,6 +83,30 @@ export function startGame(room: Room): string | null {
   room.turnOrder = shuffle(alivePlayers(room).map((p) => p.id));
   room.turnIndex = 0;
   room.phase = "clue";
+}
+
+export function startGame(room: Room): string | null {
+  if (room.phase !== "lobby") return "Game already started";
+  const n = room.players.length;
+  if (n < 3) return "Need at least 3 players to start";
+
+  const uc = room.settings.numUndercover;
+  const mw = room.settings.mrWhite ? 1 : 0;
+  if (uc < 1) return "Need at least 1 undercover";
+  const special = uc + mw;
+  if (special >= n) return "Too many special roles for this many players";
+  if (n - special <= special) return "There must be more civilians than special roles";
+
+  deal(room);
+  return null;
+}
+
+// Host can re-deal a fresh word pair mid-game (e.g. they recognise the pair).
+// Keeps the same players & settings, re-randomises roles, avoids the same pair.
+export function redeal(room: Room, playerId: string): string | null {
+  if (playerId !== room.hostId) return "Only the host can re-deal";
+  if (room.phase === "lobby") return "Start the game first";
+  deal(room, room.pair);
   return null;
 }
 

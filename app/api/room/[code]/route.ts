@@ -8,6 +8,7 @@ import {
   submitGuess,
   nextRound,
   restart,
+  redeal,
   leave,
   sanitizeSettings,
 } from "@/lib/game";
@@ -60,6 +61,9 @@ export async function POST(req: NextRequest, { params }: { params: { code: strin
         break;
       case "restart":
         err = restart(room, playerId);
+        break;
+      case "redeal":
+        err = redeal(room, playerId);
         break;
       case "leave":
         leave(room, playerId);

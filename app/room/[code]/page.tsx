@@ -179,7 +179,37 @@ export default function RoomPage() {
       <PhasePanel state={state} pid={pid} act={act} />
       <Players state={state} />
       {state.clues.length > 0 && <CluesLog state={state} />}
+      <HostControls state={state} act={act} />
     </main>
+  );
+}
+
+function HostControls({ state, act }: { state: RoomView; act: (a: string, p?: any) => void }) {
+  const active = ["clue", "vote", "reveal", "guess"].includes(state.phase);
+  if (!state.you!.isHost || !active) return null;
+  return (
+    <details className="card text-sm">
+      <summary className="cursor-pointer text-xs uppercase tracking-wide text-zinc-500">Host controls 👑</summary>
+      <div className="mt-3 flex flex-col gap-2">
+        <button
+          className="btn btn-ghost"
+          onClick={() => {
+            if (confirm("Re-deal a new word pair and restart this round? Roles will be reshuffled."))
+              act("redeal");
+          }}
+        >
+          ↻ New words (re-deal)
+        </button>
+        <button
+          className="btn btn-ghost"
+          onClick={() => {
+            if (confirm("End this game and send everyone back to the lobby?")) act("restart");
+          }}
+        >
+          ⤺ End game · back to lobby
+        </button>
+      </div>
+    </details>
   );
 }
 
